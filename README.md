@@ -1,12 +1,14 @@
 # Running examples
 
+This repository contains examples and demos for [nvk](https://github.com/maierfelix/nvk) - a Vulkan API for node
+
 Some examples use libraries such as [gl-matrix](http://glmatrix.net/) or the WebAssembly port of [tinyobjloader](https://github.com/maierfelix/tolw)
 
 1. ``npm install`` to install dependencies (if any)
 
 2. ``npm run start --vkversion=1.1.92`` to run an example
 
-Note that the `vkversion` flag specifies the vulkan version you want to use. Make sure you generated and compiled the bindings for it, otherwise you will get an error
+Note that the `vkversion` flag specifies the vulkan version you want to use. Make sure you generated and compiled the bindings for it, otherwise you will suffer from bad life decisions
 
 ## Previews:
 

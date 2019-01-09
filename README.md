@@ -1,6 +1,6 @@
 # Running examples
 
-This repository contains examples and demos for [nvk](https://github.com/maierfelix/nvk) - a Vulkan API for node
+This repository contains examples and demos for [nvk](https://github.com/maierfelix/nvk) - a [Vulkan](https://en.wikipedia.org/wiki/Vulkan_(API)) rendering API for node.js
 
 Some examples use libraries such as [gl-matrix](http://glmatrix.net/) or the WebAssembly port of [tinyobjloader](https://github.com/maierfelix/tolw)
 

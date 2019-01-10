@@ -4,8 +4,5 @@
   "scripts": {
     "start": "node --inspect --experimental-modules ./index.mjs"
   },
-  "dependencies": {
-    "gl-matrix": "^2.8.1",
-    "pngjs": "^3.3.3"
-  }
+  "dependencies": {}
 }

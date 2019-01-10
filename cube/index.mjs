@@ -1,5 +1,5 @@
 import fs from "fs";
-import nvk from "../../index";
+import nvk from "nvk";
 import { performance } from "perf_hooks";
 import glm from "gl-matrix"; const { vec3, mat4 } = glm;
 

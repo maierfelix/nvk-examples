@@ -1,5 +1,5 @@
 import fs from "fs";
-import nvk from "node-vulkan";
+import nvk from "nvk";
 import pngjs from "pngjs"; const { PNG } = pngjs;
 
 Object.assign(global, nvk);

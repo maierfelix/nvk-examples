@@ -1,5 +1,5 @@
 import fs from "fs";
-import nvk from "../../index";
+import nvk from "nvk";
 
 Object.assign(global, nvk);
 

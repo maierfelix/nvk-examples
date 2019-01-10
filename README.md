@@ -4,9 +4,10 @@ This repository contains examples and demos for [nvk](https://github.com/maierfe
 
 Some examples use libraries such as [gl-matrix](http://glmatrix.net/) or the WebAssembly port of [tinyobjloader](https://github.com/maierfelix/tolw)
 
-1. ``npm install`` to install dependencies (if any)
-
-2. ``npm run start --vkversion=1.1.92`` to run an example
+## Building:
+1. Clone this repository
+2. Run `npm install`
+3. Navigate into an example folder and run `npm run start --vkversion=1.1.92`
 
 Note that the `vkversion` flag specifies the vulkan version you want to use. Make sure you generated and compiled the bindings for it, otherwise you will suffer from bad life decisions
 

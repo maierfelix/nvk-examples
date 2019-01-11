@@ -72,6 +72,9 @@ let pixelBuffer = new VkBuffer();
 let pixelBufferMemory = new VkDeviceMemory();
 let pixelBufferSize = width * height * (4 * Float32Array.BYTES_PER_ELEMENT);
 
+let compShaderSrc = getShaderFile("./shaders/mandelbrot.spv");
+let compShaderModule = null;
+
 let layers = ["VK_LAYER_LUNARG_standard_validation"];
 
 /** Create instance **/
@@ -216,8 +219,7 @@ let layers = ["VK_LAYER_LUNARG_standard_validation"];
 
 /** Create compute pipeline **/
 {
-  let compShaderSrc = getShaderFile("./shaders/mandelbrot.spv");
-  let compShaderModule = createShaderModule(compShaderSrc);
+  compShaderModule = createShaderModule(compShaderSrc);
 
   let shaderStageCompInfo = new VkPipelineShaderStageCreateInfo();
   shaderStageCompInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
@@ -312,7 +314,23 @@ let layers = ["VK_LAYER_LUNARG_standard_validation"];
     png.data[ii + 3] = 255 * view[ii + 3];
   };
   png.pack().pipe(fs.createWriteStream("mandelbrot.png"));
-  //vkUnmapMemory(device, pixelBufferMemory);
+}
+
+/** Cleanup **/
+{
+  console.log("Cleaning up..");
+  vkDestroyFence(device, fence, null);
+  vkUnmapMemory(device, pixelBufferMemory);
+  vkFreeMemory(device, pixelBufferMemory, null);
+  vkDestroyBuffer(device, pixelBuffer, null);
+  vkDestroyShaderModule(device, compShaderModule, null);
+  vkDestroyDescriptorPool(device, descriptorPool, null);
+  vkDestroyDescriptorSetLayout(device, descriptorSetLayout, null);
+  vkDestroyPipelineLayout(device, pipelineLayout, null);
+  vkDestroyPipeline(device, pipeline, null);
+  vkDestroyCommandPool(device, commandPool, null);
+  vkDestroyDevice(device, null);
+  vkDestroyInstance(instance, null);
 }
 
 console.log("Done!");

@@ -380,7 +380,7 @@ function createPhysicalDevice() {
 
   let presentModeCount = { $: 0 };
   vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, null);
-  let presentModes = [...Array(presentModeCount.$)].map(() => 0);
+  let presentModes = new Int32Array(presentModeCount.$);
   vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, presentModes);
 
   let surfaceSupport = { $: false };
@@ -1043,7 +1043,7 @@ function recordCommandBuffers() {
 
     vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
-    vkCmdBindVertexBuffers(cmdBuffer, 0, 1, [vertexBuffer], [0]);
+    vkCmdBindVertexBuffers(cmdBuffer, 0, 1, [vertexBuffer], new BigUint64Array([0n]));
     vkCmdBindIndexBuffer(cmdBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
     vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, [descriptorSet], 0, null);
 

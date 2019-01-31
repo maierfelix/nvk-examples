@@ -205,7 +205,7 @@ vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, surfaceFormatCount
 
 let presentModeCount = { $: 0 };
 vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, null);
-let presentModes = [...Array(presentModeCount.$)].map(() => 0);
+let presentModes = new Int32Array(presentModeCount.$);
 vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, presentModes);
 
 let deviceQueueInfo = new VkDeviceQueueCreateInfo();
@@ -539,7 +539,7 @@ for (let ii = 0; ii < cmdBuffers.length; ++ii) {
 
   vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
-  vkCmdBindVertexBuffers(cmdBuffer, 0, 1, [vertexBuffer], [0]);
+  vkCmdBindVertexBuffers(cmdBuffer, 0, 1, [vertexBuffer], new BigUint64Array([0n]));
 
   vkCmdDraw(cmdBuffer, 3, 1, 0, 0);
 

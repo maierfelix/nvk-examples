@@ -145,7 +145,6 @@ createInfo.enabledLayerCount = 0;
 
 // validation layers
 let validationLayers = [
-  "VK_LAYER_LUNARG_core_validation",
   "VK_LAYER_LUNARG_standard_validation"
 ];
 createInfo.enabledLayerCount = validationLayers.length;

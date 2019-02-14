@@ -27,7 +27,6 @@ let appInfo = new VkApplicationInfo({
 });
 
 let validationLayers = [
-  "VK_LAYER_LUNARG_core_validation",
   "VK_LAYER_LUNARG_standard_validation"
 ];
 let instanceExtensions = win.getRequiredInstanceExtensions();

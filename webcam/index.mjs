@@ -318,9 +318,7 @@ function createInstance() {
     apiVersion: VK_API_VERSION_1_0
   });
 
-  let validationLayers = [
-    "VK_LAYER_LUNARG_standard_validation"
-  ];
+  let validationLayers = [];
   let instanceExtensions = win.getRequiredInstanceExtensions();
 
   // create info
@@ -1163,5 +1161,9 @@ function drawFrame() {
   presentInfo.pResults = null;
 
   result = vkQueuePresentKHR(queue, presentInfo);
-  ASSERT_VK_RESULT(result);
+  if (result === VK_SUBOPTIMAL_KHR || result === VK_ERROR_OUT_OF_DATE_KHR) {
+    win.onresize();
+  } else {
+    ASSERT_VK_RESULT(result);
+  }
 };

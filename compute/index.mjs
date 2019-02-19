@@ -75,7 +75,7 @@ let pixelBufferSize = width * height * (4 * Float32Array.BYTES_PER_ELEMENT);
 let compShaderSrc = getShaderFile("./shaders/mandelbrot.spv");
 let compShaderModule = null;
 
-let layers = ["VK_LAYER_LUNARG_standard_validation"];
+let layers = [];
 
 /** Create instance **/
 {
@@ -125,8 +125,8 @@ let layers = ["VK_LAYER_LUNARG_standard_validation"];
   let deviceInfo = new VkDeviceCreateInfo();
   deviceInfo.queueCreateInfoCount = 1;
   deviceInfo.pQueueCreateInfos = [deviceQueueInfo];
-  deviceInfo.enabledLayerCount = layers.length;
-  deviceInfo.ppEnabledLayerNames = layers;
+  deviceInfo.enabledExtensionCount = layers.length;
+  deviceInfo.ppEnabledExtensionNames = layers;
   deviceInfo.pEnabledFeatures = new VkPhysicalDeviceFeatures();
 
   result = vkCreateDevice(physicalDevice, deviceInfo, null, device);

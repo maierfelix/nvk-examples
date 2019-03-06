@@ -37,3 +37,7 @@ Note that the `--vkversion` flag specifies the vulkan version you want to use. C
 
  - A spinning webcam model using a PBR shader
  - Demonstrates ``.obj`` file uploading, uniform buffer objects and window events
+
+#### [Window](/window):
+
+ - Demonstrates usage of the window interface

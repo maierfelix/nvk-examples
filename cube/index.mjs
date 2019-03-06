@@ -203,9 +203,7 @@ function createInstance() {
   createInfo.enabledLayerCount = 0;
 
   // validation layers
-  let validationLayers = [
-    "VK_LAYER_LUNARG_standard_validation"
-  ];
+  let validationLayers = [];
   createInfo.enabledLayerCount = validationLayers.length;
   createInfo.ppEnabledLayerNames = validationLayers;
 
@@ -830,5 +828,9 @@ function drawFrame() {
   presentInfo.pResults = null;
 
   result = vkQueuePresentKHR(queue, presentInfo);
-  ASSERT_VK_RESULT(result);
+  if (result === VK_SUBOPTIMAL_KHR || result === VK_ERROR_OUT_OF_DATE_KHR) {
+    win.onresize();
+  } else {
+    ASSERT_VK_RESULT(result);
+  }
 };

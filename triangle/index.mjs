@@ -144,9 +144,7 @@ createInfo.ppEnabledExtensionNames = instanceExtensions;
 createInfo.enabledLayerCount = 0;
 
 // validation layers
-let validationLayers = [
-  "VK_LAYER_LUNARG_standard_validation"
-];
+let validationLayers = [];
 createInfo.enabledLayerCount = validationLayers.length;
 createInfo.ppEnabledLayerNames = validationLayers;
 

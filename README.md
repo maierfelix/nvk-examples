@@ -7,9 +7,9 @@ Some examples use libraries such as [gl-matrix](http://glmatrix.net/) or the Web
 ## Building:
 1. Clone this repository
 2. Run `npm install`
-3. Navigate into an example folder and run `npm run start --vkversion=1.1.92`
+3. Navigate into an example folder and run `npm run start --vkversion=1.1.101`
 
-Note that the `vkversion` flag specifies the vulkan version you want to use. Make sure you generated and compiled the bindings for it, otherwise you will suffer from bad life decisions
+Note that the `--vkversion` flag specifies the vulkan version you want to use. Currently the recommended version is `1.1.101`.
 
 ## Previews:
 

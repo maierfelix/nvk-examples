@@ -23,6 +23,10 @@ Note that the `--vkversion` flag specifies the vulkan version you want to use. C
 
  - A spinning cube, demonstrating buffer and texture upload
 
+#### [Live Shaders](/live-shaders):
+
+ - Demonstrates hot reloading of shaders based on file changes
+
 #### [Triangle](/triangle):
 <img src="https://i.imgur.com/nGGxpsQ.gif" width="336">
 

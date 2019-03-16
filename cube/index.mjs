@@ -1,5 +1,6 @@
 import fs from "fs";
 import nvk from "nvk";
+import { GLSL } from "nvk-essentials";
 import { performance } from "perf_hooks";
 import glm from "gl-matrix"; const { vec3, mat4 } = glm;
 
@@ -46,8 +47,15 @@ win.onresize = (e) => {
   createTransforms();
 };
 
-let vertSrc = readBinaryFile("./shaders/cube-vert.spv");
-let fragSrc = readBinaryFile("./shaders/cube-frag.spv");
+let vertSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/cube.vert`),
+  extension: `vert`
+}).output;
+
+let fragSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/cube.frag`),
+  extension: `frag`
+}).output;
 
 let vertexBuffer = new VkBuffer();
 let vertexBufferMemory = new VkDeviceMemory();

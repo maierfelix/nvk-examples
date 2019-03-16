@@ -1,5 +1,6 @@
 import fs from "fs";
 import nvk from "nvk";
+import { GLSL } from "nvk-essentials";
 import { performance } from "perf_hooks";
 import glm from "gl-matrix"; const { vec3, mat4 } = glm;
 
@@ -99,8 +100,15 @@ win.onkeyup = (e) => {
   //console.log("onkeyup", e);
 };
 
-let vertSrc = readBinaryFile("./shaders/basic-vert.spv");
-let fragSrc = readBinaryFile("./shaders/basic-frag.spv");
+let vertSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/basic.vert`),
+  extension: `vert`
+}).output;
+
+let fragSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/basic.frag`),
+  extension: `frag`
+}).output;
 
 let depthImage = new VkImage();
 let depthImageMemory = new VkDeviceMemory();
@@ -1100,6 +1108,7 @@ function drawLoop() {
   win.pollEvents();
 };
 
+let uboMemoryAddr = { $: 0n };
 function updateTransforms() {
   let now = performance.now();
 
@@ -1125,10 +1134,8 @@ function updateTransforms() {
   for (let ii = 0; ii < mModel.length; ++ii) ubo[0 + ii] = mModel[ii];
 
   // upload
-  let dataPtr = { $: 0n };
-  vkMapMemory(device, uniformBufferMemory, 0, ubo.byteLength, 0, dataPtr);
-  memoryCopy(dataPtr.$, ubo, ubo.byteLength);
-  vkUnmapMemory(device, uniformBufferMemory);
+  if (uboMemoryAddr.$ === 0n) vkMapMemory(device, uniformBufferMemory, 0, ubo.byteLength, 0, uboMemoryAddr);
+  memoryCopy(uboMemoryAddr.$, ubo, ubo.byteLength);
 };
 
 function drawFrame() {

@@ -1,15 +1,12 @@
 import fs from "fs";
 import nvk from "nvk";
+import { GLSL } from "nvk-essentials";
 import pngjs from "pngjs"; const { PNG } = pngjs;
 
 Object.assign(global, nvk);
 
 function ASSERT_VK_RESULT(result) {
   if (result !== VK_SUCCESS) throw new Error(`Vulkan assertion failed: ${result}`);
-};
-
-function getShaderFile(path) {
-  return new Uint8Array(fs.readFileSync(path, null));
 };
 
 function createShaderModule(shaderSrc) {
@@ -72,7 +69,11 @@ let pixelBuffer = new VkBuffer();
 let pixelBufferMemory = new VkDeviceMemory();
 let pixelBufferSize = width * height * (4 * Float32Array.BYTES_PER_ELEMENT);
 
-let compShaderSrc = getShaderFile("./shaders/mandelbrot.spv");
+let compShaderSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/mandelbrot.comp`),
+  extension: `comp`
+}).output;
+
 let compShaderModule = null;
 
 let layers = [];

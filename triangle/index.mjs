@@ -1,5 +1,6 @@
 import fs from "fs";
 import nvk from "nvk";
+import { GLSL } from "nvk-essentials";
 
 Object.assign(global, nvk);
 
@@ -96,8 +97,15 @@ function createVertexBuffer(buffer, bufferMemory, byteLength) {
 
 };
 
-const vertSrc = getShaderFile("./shaders/triangle-vert.spv");
-const fragSrc = getShaderFile("./shaders/triangle-frag.spv");
+let vertSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/triangle.vert`),
+  extension: `vert`
+}).output;
+
+let fragSrc = GLSL.toSPIRVSync({
+  source: fs.readFileSync(`./shaders/triangle.frag`),
+  extension: `frag`
+}).output;
 
 let result = null;
 

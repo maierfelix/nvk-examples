@@ -26,3 +26,5 @@ function onFileChange(e) {
 fs.watch(watchPath, { recursive: true }, e => onFileChange(e));
 
 console.log(`Listening for changes in ${watchPath}`);
+
+onFileChange(null);

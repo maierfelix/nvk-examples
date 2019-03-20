@@ -22,6 +22,21 @@ win.width;
 win.height;
 
 /**
+ * The window's framebuffer width
+ */
+win.frameBufferWidth;
+
+/**
+ * The window's framebuffer height
+ */
+win.frameBufferHeight;
+
+/**
+ * Pixel ratio of the current display device
+ */
+win.devicePixelRatio;
+
+/**
  * The current title of the window
  */
 win.title;
@@ -77,7 +92,7 @@ win.onresize = e => {
 };
 
 /**
- * Event fired before the window closes
+ * Event fired when the window closes
  */
 win.onclose = e => {
   console.log(`Closing window..`);

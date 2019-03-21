@@ -4,6 +4,8 @@ This repository contains examples and demos for [nvk](https://github.com/maierfe
 
 Some examples use libraries such as [gl-matrix](http://glmatrix.net/) or the WebAssembly port of [tinyobjloader](https://github.com/maierfelix/tolw)
 
+To compile shaders at runtime, [nvk-essentials](https://github.com/maierfelix/nvk-essentials) is used
+
 ## Building:
 1. Clone this repository
 2. Run `npm install`

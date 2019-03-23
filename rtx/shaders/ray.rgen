@@ -1,0 +1,81 @@
+#version 460
+#extension GL_NV_ray_tracing : require
+#extension GL_GOOGLE_include_directive : require
+
+#include "./shared.h"
+
+layout(set = 0, binding = 0) uniform accelerationStructureNV Scene;
+layout(set = 0, binding = 1, rgba8) uniform image2D ResultImage;
+
+layout(set = 0, binding = 2, std140) uniform AppData {
+    UniformParams Params;
+};
+
+layout(location = 0) rayPayloadNV RayPayload PrimaryRay;
+layout(location = 2)  rayPayloadNV ShadowRayPayload SecondaryRay;
+
+
+vec3 CalcRayDir(vec2 screenUV, float aspect) {
+    vec3 u = Params.camSide.xyz;
+    vec3 v = Params.camUp.xyz;
+
+    const float planeWidth = tan(Params.camNearFarFov.z * 0.5f);
+
+    u *= (planeWidth * aspect);
+    v *= planeWidth;
+
+    const vec3 rayDir = normalize(Params.camDir.xyz + (u * screenUV.x) - (v * screenUV.y));
+    return rayDir;
+}
+
+vec3 shootPrimaryRay(vec3 origin, vec3 direction) {
+    const uint flags = gl_RayFlagsOpaqueNV;
+    const uint cullMask = 0xFF;
+    const uint sbtRecordOffset = 0;
+    const uint sbtRecordStride = 1;
+    const uint missIndex = 0;
+    const float tmin = 0.0f;
+    const float tmax = Params.camNearFarFov.y;
+    const int payloadLocation = 0;
+
+    traceNV(
+        Scene,
+        flags,
+        cullMask,
+        sbtRecordOffset,
+        sbtRecordStride,
+        missIndex,
+        origin,
+        tmin,
+        direction,
+        tmax,
+        payloadLocation
+    );
+
+    return PrimaryRay.colorAndDist.rgb;
+}
+
+void main() {
+    const vec2 curPixel = vec2(gl_LaunchIDNV.xy);
+    const vec2 bottomRight = vec2(gl_LaunchSizeNV.xy - 1);
+
+    const vec2 uv = (curPixel / bottomRight) * 2.0f - 1.0f;
+    const float aspect = float(gl_LaunchSizeNV.x) / float(gl_LaunchSizeNV.y);
+
+    vec3 origin = Params.camPos.xyz;
+    vec3 direction = CalcRayDir(uv, aspect);
+
+    shootPrimaryRay(origin, direction);
+
+    vec3 hitColor = PrimaryRay.colorAndDist.rgb;
+    float hitDistance = PrimaryRay.colorAndDist.w;
+    vec3 hitNormal = PrimaryRay.normalAndObjId.xyz;
+    float NL = saturate(dot(hitNormal, normalize(Params.sunPosAndAmbient.xyz)));
+    vec3 lighting = max(Params.sunPosAndAmbient.w, NL) * hitColor;
+
+    if (hitDistance < 0) {
+        lighting = hitColor;
+    }
+
+    imageStore(ResultImage, ivec2(gl_LaunchIDNV.xy), vec4(lighting, 1.0f));
+}

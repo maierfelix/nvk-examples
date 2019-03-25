@@ -30,7 +30,7 @@ Note that the `--vkversion` flag specifies the vulkan version you want to use. C
  - Demonstrates hot reloading of shaders based on file changes
 
  #### [RTX](/rtx):
-<img src="./rtx/demo.jpg" width="336">
+<img src="https://i.imgur.com/ySyR8OV.jpg" width="336">
 
  - VK_NV_raytracing example
 

@@ -48,7 +48,7 @@ Note that the `--vkversion` flag specifies the vulkan version you want to use. C
 
  - Demonstrates usage of the window interface
 
- #### [Webcam](/rtx):
+ #### [RTX](/rtx):
 <img src="./rtx/demo.jpg" width="336">
 
  - VK_NV_raytracing example

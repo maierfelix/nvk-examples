@@ -29,6 +29,11 @@ Note that the `--vkversion` flag specifies the vulkan version you want to use. C
 
  - Demonstrates hot reloading of shaders based on file changes
 
+ #### [RTX](/rtx):
+<img src="./rtx/demo.jpg" width="336">
+
+ - VK_NV_raytracing example
+
 #### [Triangle](/triangle):
 <img src="https://i.imgur.com/nGGxpsQ.gif" width="336">
 
@@ -47,8 +52,3 @@ Note that the `--vkversion` flag specifies the vulkan version you want to use. C
 #### [Window](/window):
 
  - Demonstrates usage of the window interface
-
- #### [RTX](/rtx):
-<img src="./rtx/demo.jpg" width="336">
-
- - VK_NV_raytracing example

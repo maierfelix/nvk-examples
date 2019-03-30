@@ -16,6 +16,14 @@ let FRAME = 0;
 
 Object.assign(global, nvk);
 
+const requiredExtensions = [
+  VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+  VK_NV_RAY_TRACING_EXTENSION_NAME,
+  VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
+  VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+  VK_KHR_MAINTENANCE3_EXTENSION_NAME
+];
+
 class Vulkan {
   constructor() {
     const scene = [Plane, Cube];
@@ -144,6 +152,51 @@ class Vulkan {
     return instance;
   }
 
+  getPhysicalDeviceExtensions(physicalDevice) {
+    // retrieve extensions of physical device
+    let extensionCount = { $: 0 };
+    vkEnumerateDeviceExtensionProperties(physicalDevice, null, extensionCount, null);
+    let availableExtensions = [...Array(extensionCount.$)].map(() => new VkExtensionProperties());
+    vkEnumerateDeviceExtensionProperties(physicalDevice, null, extensionCount, availableExtensions);
+    return availableExtensions;
+  }
+
+  getPhysicalDevices(instance) {
+    // get amount of available physical devices
+    let deviceCount = { $:0 };
+    vkEnumeratePhysicalDevices(instance, deviceCount, null);
+    if (deviceCount.$ <= 0) console.error("Error: No physical device available!");
+
+    // retrieve array of available physical devices
+    let physicalDevices = [...Array(deviceCount.$)].map(() => new VkPhysicalDevice());
+    let result = vkEnumeratePhysicalDevices(instance, deviceCount, physicalDevices);
+    ASSERT_VK_RESULT(result);
+
+    return physicalDevices;
+  }
+
+  pickPhysicalDevice(instance) {
+    let physicalDevices = this.getPhysicalDevices(instance);
+    let compatibleDevice = null;
+
+    physicalDevices.map(physicalDevice => {
+      let availableExtensions = this.getPhysicalDeviceExtensions(physicalDevice);
+      // pick physical device that supports all required extensions
+      let isCompatible = true;
+      requiredExtensions.map(required => {
+        let extensionFound = availableExtensions.filter(available => {
+          return required === available.extensionName;
+        })[0] || null;
+        if (!extensionFound) isCompatible = false;
+      });
+      // compatible physical device found, use it
+      if (isCompatible) compatibleDevice = physicalDevice;
+    });
+
+    if (!compatibleDevice) throw new Error(`No compatible physical device available!`);
+    return compatibleDevice;
+  }
+
   createPhysicalDevice(instance) {
     const deviceCount = { $: 0 };
     vkEnumeratePhysicalDevices(instance, deviceCount, null);
@@ -155,8 +208,8 @@ class Vulkan {
     result = vkEnumeratePhysicalDevices(instance, deviceCount, devices);
     ASSERT_VK_RESULT(result);
 
-    // auto pick first found device
-    const [physicalDevice] = devices;
+    // pick compatible device
+    const physicalDevice = this.pickPhysicalDevice(instance);
 
     const descriptorIndexing = new VkPhysicalDeviceDescriptorIndexingFeaturesEXT();
     const deviceFeatures = new VkPhysicalDeviceFeatures2({
@@ -201,20 +254,12 @@ class Vulkan {
       pQueuePriorities: new Float32Array([1.0, 1.0, 1.0, 1.0])
     });
 
-    const deviceExtensions = [
-      VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-      VK_NV_RAY_TRACING_EXTENSION_NAME,
-      VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
-      VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-      VK_KHR_MAINTENANCE3_EXTENSION_NAME
-    ];
-
     const deviceInfo = new VkDeviceCreateInfo({
       pNext: deviceFeatures,
       queueCreateInfoCount: 1,
       pQueueCreateInfos: [deviceQueueInfo],
-      enabledExtensionCount: deviceExtensions.length,
-      ppEnabledExtensionNames: deviceExtensions,
+      enabledExtensionCount: requiredExtensions.length,
+      ppEnabledExtensionNames: requiredExtensions,
       pEnabledFeatures: null
     });
 

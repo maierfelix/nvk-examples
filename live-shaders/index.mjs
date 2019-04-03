@@ -6,18 +6,18 @@ const watchPath = `./shaders/`;
 function onFileChange(e) {
   console.log("Reloading shaders..");
   let vertexShader = GLSL.toSPIRVSync({
-    source: fs.readFileSync(`./shaders/example.vert`),
+    source: fs.readFileSync(`${watchPath}example.vert`),
     extension: `vert`
   });
   let fragmentShader = GLSL.toSPIRVSync({
-    source: fs.readFileSync(`./shaders/example.frag`),
+    source: fs.readFileSync(`${watchPath}example.frag`),
     extension: `frag`
   });
   if (vertexShader.error) {
     return console.error(`Error in vertex shader:`, vertexShader.error);
   }
   if (fragmentShader.error) {
-    return console.error(`Error in vertex shader:`, fragmentShader.error);
+    return console.error(`Error in fragment shader:`, fragmentShader.error);
   }
   console.log(`Vertex shader byteLength: ${vertexShader.output.byteLength}`);
   console.log(`Fragment shader byteLength: ${fragmentShader.output.byteLength}`);

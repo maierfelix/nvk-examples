@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "lib": ["es6", "dom"]
   }
 }

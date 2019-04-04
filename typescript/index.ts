@@ -1,14 +1,6 @@
-import {
-  VulkanWindow,
-  VkResult,
-  VkStructureType,
-  VK_MAKE_VERSION,
-  VK_API_VERSION_1_0,
-  VkInstance,
-  VkApplicationInfo,
-  VkInstanceCreateInfo,
-  vkCreateInstance
-} from "nvk/generated/1.1.97/index";
+import * as nvk from "nvk/generated/1.1.101/win32/index";
+
+Object.assign(global, nvk);
 
 let win = new VulkanWindow({
   width: 480,
@@ -26,9 +18,7 @@ let appInfo = new VkApplicationInfo({
   apiVersion: VK_API_VERSION_1_0
 });
 
-let validationLayers = [
-  "VK_LAYER_LUNARG_standard_validation"
-];
+let validationLayers = [];
 let instanceExtensions = win.getRequiredInstanceExtensions();
 
 let instanceInfo = new VkInstanceCreateInfo();
@@ -45,3 +35,10 @@ if (result !== VkResult.VK_SUCCESS) throw `Failed to create VkInstance!`;
 setInterval(() => {
   win.pollEvents();
 }, 1e3 / 60);
+
+let amountOfLayers = { $: 0 };
+vkEnumerateInstanceLayerProperties(amountOfLayers, null);
+let layers = new Array(amountOfLayers.$).fill(null).map(() => new VkLayerProperties());
+vkEnumerateInstanceLayerProperties(amountOfLayers, layers);
+
+console.log(layers);

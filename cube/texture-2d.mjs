@@ -40,7 +40,7 @@ Texture2D.prototype.upload = function() {
     imageMemory,
     imageLayout
   } = this;
-  let byteLength = data.byteLength;
+  let byteLength = BigInt(data.byteLength);
 
   let stagingBuffer = new VkBuffer();
   let stagingBufferMemory = new VkDeviceMemory();
@@ -53,7 +53,7 @@ Texture2D.prototype.upload = function() {
   });
 
   let dataPtr = { $: 0n };
-  vkMapMemory(device, stagingBufferMemory, 0, byteLength, 0, dataPtr);
+  vkMapMemory(device, stagingBufferMemory, 0n, byteLength, 0, dataPtr);
   memoryCopy(dataPtr.$, data, byteLength);
   vkUnmapMemory(device, stagingBufferMemory);
 
@@ -94,7 +94,7 @@ Texture2D.prototype.upload = function() {
   result = vkAllocateMemory(device, memoryAllocateInfo, null, imageMemory);
   ASSERT_VK_RESULT(result);
 
-  vkBindImageMemory(device, image, imageMemory, 0);
+  vkBindImageMemory(device, image, imageMemory, 0n);
 
   this.setLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
   this.transferBufferToImage(stagingBuffer);
@@ -261,7 +261,7 @@ Texture2D.prototype.transferBufferToImage = function(buffer) {
   imageExtent.depth = 1;
 
   let bufferImageCopy = new VkBufferImageCopy();
-  bufferImageCopy.bufferOffset = 0;
+  bufferImageCopy.bufferOffset = 0n;
   bufferImageCopy.bufferRowLength = 0;
   bufferImageCopy.bufferImageHeight = 0;
   bufferImageCopy.imageSubresource = imageSubresource;

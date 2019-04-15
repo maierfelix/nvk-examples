@@ -283,7 +283,7 @@ export class UniformStorage {
     const bufferMemory = new VkDeviceMemory();
     result = vkAllocateMemory(this.device, memoryAllocateInfo, null, bufferMemory);
     ASSERT_VK_RESULT(result);
-    result = vkBindImageMemory(this.device, image, bufferMemory, 0);
+    result = vkBindImageMemory(this.device, image, bufferMemory, 0n);
     ASSERT_VK_RESULT(result);
 
     const components = new VkComponentMapping({
@@ -335,8 +335,8 @@ export class UniformStorage {
     for (const g of geometries) {
       const bufferInfo = new VkDescriptorBufferInfo({
         buffer: g,
-        offset: 0,
-        range: g.length
+        offset: 0n,
+        range: BigInt(g.length)
       });
 
       bufferInfos.push(bufferInfo);

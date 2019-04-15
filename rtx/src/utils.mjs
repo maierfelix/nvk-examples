@@ -39,7 +39,7 @@ export function getMemoryTypeIndex(physicalDevice, typeFilter, propertyFlag) {
 
 export function createVertexBuffer(physicalDevice, device, buffer, bufferMemory, vertices, usage, typedArray) {
   const bufferInfo = new VkBufferCreateInfo({
-    size: vertices.byteLength,
+    size: BigInt(vertices.byteLength),
     usage: usage,
     sharingMode: VK_SHARING_MODE_EXCLUSIVE,
     queueFamilyIndexCount: 0,
@@ -60,15 +60,15 @@ export function createVertexBuffer(physicalDevice, device, buffer, bufferMemory,
   result = vkAllocateMemory(device, memAllocInfo, null, bufferMemory);
   ASSERT_VK_RESULT(result);
 
-  result = vkBindBufferMemory(device, buffer, bufferMemory, 0);
+  result = vkBindBufferMemory(device, buffer, bufferMemory, 0n);
   ASSERT_VK_RESULT(result);
 
   const dataPtr = { $: 0n };
 
-  result = vkMapMemory(device, bufferMemory, 0, bufferInfo.size, 0, dataPtr);
+  result = vkMapMemory(device, bufferMemory, 0n, bufferInfo.size, 0, dataPtr);
   ASSERT_VK_RESULT(result);
 
-  const verticesBuffer = createV8ArrayBufferFromMemory(dataPtr.$, bufferInfo.size);
+  const verticesBuffer = ArrayBuffer.fromAddress(dataPtr.$, bufferInfo.size);
   const verticesView = new typedArray(verticesBuffer);
   for (let ii = 0; ii < vertices.length; ++ii) {
     verticesView[ii] = vertices[ii];

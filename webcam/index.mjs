@@ -248,7 +248,7 @@ function readBinaryFile(path) {
 function createShaderModule(shaderSrc, shaderModule) {
   let shaderModuleInfo = new VkShaderModuleCreateInfo();
   shaderModuleInfo.pCode = shaderSrc;
-  shaderModuleInfo.codeSize = shaderSrc.byteLength;
+  shaderModuleInfo.codeSize = BigInt(shaderSrc.byteLength);
   result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
   ASSERT_VK_RESULT(result);
   return shaderModule;
@@ -818,7 +818,7 @@ function createImage({ width, height, format, tiling, usage, properties, image, 
   result = vkAllocateMemory(device, allocInfo, null, imageMemory);
   ASSERT_VK_RESULT(result);
 
-  vkBindImageMemory(device, image, imageMemory, 0);
+  vkBindImageMemory(device, image, imageMemory, 0n);
 };
 
 export function transitionImageLayout({ image, format, oldImageLayout, newImageLayout } = opts) {
@@ -999,8 +999,8 @@ function createDescriptorSet() {
 
   let bufferInfo = new VkDescriptorBufferInfo();
   bufferInfo.buffer = uniformBuffer;
-  bufferInfo.offset = 0;
-  bufferInfo.range = ubo.byteLength;
+  bufferInfo.offset = 0n;
+  bufferInfo.range = BigInt(ubo.byteLength);
 
   let writeDescriptorSet = new VkWriteDescriptorSet();
   writeDescriptorSet.dstSet = descriptorSet;
@@ -1049,7 +1049,7 @@ function recordCommandBuffers() {
     vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
     vkCmdBindVertexBuffers(cmdBuffer, 0, 1, [vertexBuffer], new BigUint64Array([0n]));
-    vkCmdBindIndexBuffer(cmdBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(cmdBuffer, indexBuffer, 0n, VK_INDEX_TYPE_UINT16);
     vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, [descriptorSet], 0, null);
 
     let viewport = new VkViewport();
@@ -1134,13 +1134,13 @@ function updateTransforms() {
   for (let ii = 0; ii < mModel.length; ++ii) ubo[0 + ii] = mModel[ii];
 
   // upload
-  if (uboMemoryAddr.$ === 0n) vkMapMemory(device, uniformBufferMemory, 0, ubo.byteLength, 0, uboMemoryAddr);
-  memoryCopy(uboMemoryAddr.$, ubo, ubo.byteLength);
+  if (uboMemoryAddr.$ === 0n) vkMapMemory(device, uniformBufferMemory, 0n, BigInt(ubo.byteLength), 0, uboMemoryAddr);
+  memoryCopy(uboMemoryAddr.$, ubo, BigInt(ubo.byteLength));
 };
 
 function drawFrame() {
   let imageIndex = { $: 0 };
-  result = vkAcquireNextImageKHR(device, swapchain, Number.MAX_SAFE_INTEGER, semaphoreImageAvailable, null, imageIndex);
+  result = vkAcquireNextImageKHR(device, swapchain, BigInt(Number.MAX_SAFE_INTEGER), semaphoreImageAvailable, null, imageIndex);
   ASSERT_VK_RESULT(result);
 
   let waitStageMask = new Int32Array([

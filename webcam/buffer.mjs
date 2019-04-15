@@ -1,5 +1,5 @@
 export function memoryCopy(dstPtr, srcData, byteLen) {
-  let dstBuffer = createV8ArrayBufferFromMemory(dstPtr, byteLen);
+  let dstBuffer = ArrayBuffer.fromAddress(dstPtr, byteLen);
   let srcBuffer = srcData.buffer;
   let dstView = new Uint8Array(dstBuffer);
   let srcView = new Uint8Array(srcBuffer);
@@ -8,7 +8,7 @@ export function memoryCopy(dstPtr, srcData, byteLen) {
 
 export function createBuffer({ size, usage, buffer, bufferMemory, propertyFlags } = opts) {
   let bufferInfo = new VkBufferCreateInfo();
-  bufferInfo.size = size;
+  bufferInfo.size = BigInt(size);
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   bufferInfo.queueFamilyIndexCount = 0;
@@ -27,7 +27,7 @@ export function createBuffer({ size, usage, buffer, bufferMemory, propertyFlags 
   result = vkAllocateMemory(device, memAllocInfo, null, bufferMemory);
   ASSERT_VK_RESULT(result);
 
-  vkBindBufferMemory(device, buffer, bufferMemory, 0);
+  vkBindBufferMemory(device, buffer, bufferMemory, 0n);
 };
 
 export function copyBuffer({ srcBuffer, dstBuffer, byteLength } = opts) {
@@ -49,8 +49,8 @@ export function copyBuffer({ srcBuffer, dstBuffer, byteLength } = opts) {
   ASSERT_VK_RESULT(result);
 
   let bufferCopy = new VkBufferCopy();
-  bufferCopy.srcOffset = 0;
-  bufferCopy.dstOffset = 0;
+  bufferCopy.srcOffset = 0n;
+  bufferCopy.dstOffset = 0n;
   bufferCopy.size = byteLength;
 
   vkCmdCopyBuffer(cmdBuffer, srcBuffer, dstBuffer, 1, [bufferCopy]);
@@ -69,7 +69,7 @@ export function copyBuffer({ srcBuffer, dstBuffer, byteLength } = opts) {
 };
 
 export function uploadBufferData({ data, usage, buffer, bufferMemory } = opts) {
-  let size = data.byteLength;
+  let size = BigInt(data.byteLength);
 
   let stagingBuffer = new VkBuffer();
   let stagingBufferMemory = new VkDeviceMemory();
@@ -83,8 +83,8 @@ export function uploadBufferData({ data, usage, buffer, bufferMemory } = opts) {
   });
 
   let dataPtr = { $: 0n };
-  vkMapMemory(device, stagingBufferMemory, 0, size, 0, dataPtr);
-  memoryCopy(dataPtr.$, data, data.byteLength);
+  vkMapMemory(device, stagingBufferMemory, 0n, size, 0, dataPtr);
+  memoryCopy(dataPtr.$, data, size);
   vkUnmapMemory(device, stagingBufferMemory);
 
   createBuffer({
@@ -98,7 +98,7 @@ export function uploadBufferData({ data, usage, buffer, bufferMemory } = opts) {
   copyBuffer({
     srcBuffer: stagingBuffer,
     dstBuffer: buffer,
-    byteLength: data.byteLength
+    byteLength: size
   });
 };
 

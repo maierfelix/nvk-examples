@@ -14,7 +14,7 @@ function createShaderModule(shaderSrc) {
   let shaderModuleInfo = new VkShaderModuleCreateInfo();
   shaderModuleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   shaderModuleInfo.pCode = shaderSrc;
-  shaderModuleInfo.codeSize = shaderSrc.byteLength;
+  shaderModuleInfo.codeSize = BigInt(shaderSrc.byteLength);
   result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
   ASSERT_VK_RESULT(result);
   return shaderModule;
@@ -67,7 +67,7 @@ let workGroupSize = 32;
 
 let pixelBuffer = new VkBuffer();
 let pixelBufferMemory = new VkDeviceMemory();
-let pixelBufferSize = width * height * (4 * Float32Array.BYTES_PER_ELEMENT);
+let pixelBufferSize = BigInt(width * height * (4 * Float32Array.BYTES_PER_ELEMENT));
 
 let compShaderSrc = GLSL.toSPIRVSync({
   source: fs.readFileSync(`./shaders/mandelbrot.comp`),
@@ -158,7 +158,7 @@ let layers = [];
   result = vkAllocateMemory(device, memAllocInfo, null, pixelBufferMemory);
   ASSERT_VK_RESULT(result);
 
-  result = vkBindBufferMemory(device, pixelBuffer, pixelBufferMemory, 0);
+  result = vkBindBufferMemory(device, pixelBuffer, pixelBufferMemory, 0n);
   ASSERT_VK_RESULT(result);
 }
 
@@ -205,7 +205,7 @@ let layers = [];
 
   let bufferInfo = new VkDescriptorBufferInfo();
   bufferInfo.buffer = pixelBuffer;
-  bufferInfo.offset = 0;
+  bufferInfo.offset = 0n;
   bufferInfo.range = pixelBufferSize;
 
   let writeDescriptorSet = new VkWriteDescriptorSet();
@@ -291,7 +291,7 @@ let layers = [];
   result = vkQueueSubmit(queue, 1, [submitInfo], fence);
   ASSERT_VK_RESULT(result);
 
-  result = vkWaitForFences(device, 1, [fence], VK_TRUE, 60 * 1e9);
+  result = vkWaitForFences(device, 1, [fence], VK_TRUE, BigInt(60 * 1e9));
   ASSERT_VK_RESULT(result);
 
 }
@@ -300,8 +300,8 @@ let layers = [];
 {
   console.log("Reading back..");
   let dataPtr = { $: 0n };
-  vkMapMemory(device, pixelBufferMemory, 0, pixelBufferSize, 0, dataPtr);
-  let data = createV8ArrayBufferFromMemory(dataPtr.$, pixelBufferSize);
+  vkMapMemory(device, pixelBufferMemory, 0n, pixelBufferSize, 0, dataPtr);
+  let data = ArrayBuffer.fromAddress(dataPtr.$, pixelBufferSize);
   let view = new Float32Array(data);
   let png = new PNG({
     width,

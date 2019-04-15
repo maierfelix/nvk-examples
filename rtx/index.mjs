@@ -369,12 +369,12 @@ class Vulkan {
         cmdBuffer2,
         b.accelerationStructureInfo,
         null,
-        0,
+        0n,
         VK_FALSE,
         b.accelerationStructure,
         null,
         scratchBuffer,
-        0
+        0n
       );
       vkCmdPipelineBarrier(
         cmdBuffer2,
@@ -407,12 +407,12 @@ class Vulkan {
       cmdBuffer2,
       tAS.accelerationStructureInfo,
       instancesBuffer,
-      0,
+      0n,
       VK_FALSE,
       tAS.accelerationStructure,
       null,
       scratchBuffer,
-      0
+      0n
     );
 
     vkCmdPipelineBarrier(
@@ -480,16 +480,16 @@ class Vulkan {
       vkCmdTraceRaysNV(
         cmdBuffer,
         SBT,
-        sbt.getRaygenOffset(),
+        BigInt(sbt.getRaygenOffset()),
         SBT,
-        sbt.getMissOffset(),
-        sbt.getStride(),
+        BigInt(sbt.getMissOffset()),
+        BigInt(sbt.getStride()),
         SBT,
-        sbt.getHitOffset(),
-        sbt.getStride(),
+        BigInt(sbt.getHitOffset()),
+        BigInt(sbt.getStride()),
         null,
-        0,
-        0,
+        0n,
+        0n,
         win.width,
         win.height,
         1
@@ -734,7 +734,7 @@ class Vulkan {
     function createShaderModule(shaderSrc, shaderModule) {
       const shaderModuleInfo = new VkShaderModuleCreateInfo({
         pCode: shaderSrc,
-        codeSize: shaderSrc.byteLength
+        codeSize: BigInt(shaderSrc.byteLength)
       });
       result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
       ASSERT_VK_RESULT(result);
@@ -762,11 +762,11 @@ class Vulkan {
 
   drawFrame(device, swapchain, queue, { semaphoreImageAvailable, semaphoreRenderingAvailable }, cmdBuffers, fenses) {
     const imageIndex = { $: 0 };
-    result = vkAcquireNextImageKHR(device, swapchain, Number.MAX_SAFE_INTEGER, semaphoreImageAvailable, null, imageIndex);
+    result = vkAcquireNextImageKHR(device, swapchain, BigInt(Number.MAX_SAFE_INTEGER), semaphoreImageAvailable, null, imageIndex);
     ASSERT_VK_RESULT(result);
 
     const fence = fenses[imageIndex.$];
-    result = vkWaitForFences(device, 1, [fence], VK_TRUE, Number.MAX_SAFE_INTEGER);
+    result = vkWaitForFences(device, 1, [fence], VK_TRUE, BigInt(Number.MAX_SAFE_INTEGER));
     ASSERT_VK_RESULT(result);
     vkResetFences(device, 1, [fence]);
 
@@ -992,16 +992,16 @@ class Vulkan {
   createRTGeometry({ vertexBuffer, indicesBuffer }) {
     const triangles = new VkGeometryTrianglesNV({
       vertexData: vertexBuffer,
-      vertexOffset: 0,
+      vertexOffset: 0n,
       vertexCount: vertexBuffer.length / 3,
-      vertexStride: 3 * Float32Array.BYTES_PER_ELEMENT,
+      vertexStride: BigInt(3 * Float32Array.BYTES_PER_ELEMENT),
       vertexFormat: VK_FORMAT_R32G32B32_SFLOAT,
       indexData: indicesBuffer,
-      indexOffset: 0,
+      indexOffset: 0n,
       indexCount: indicesBuffer.length,
       indexType: indicesBuffer.type,
       transformData: null,
-      transformOffset: 0
+      transformOffset: 0n
     });
 
     const aabb = new VkGeometryAABBNV();
@@ -1029,7 +1029,7 @@ class Vulkan {
 
     const accelerationStructureCreateInfo = new VkAccelerationStructureCreateInfoNV({
       info: accelerationStructureInfo,
-      compactedSize: 0
+      compactedSize: 0n
     });
 
     const accelerationStructure = new VkAccelerationStructureNV();
@@ -1060,7 +1060,7 @@ class Vulkan {
     const bindInfo = new VkBindAccelerationStructureMemoryInfoNV({
       accelerationStructure: accelerationStructure,
       memory: bufferMemory,
-      memoryOffset: 0,
+      memoryOffset: 0n,
       deviceIndexCount: 0,
       pDeviceIndices: null
     });
@@ -1070,7 +1070,7 @@ class Vulkan {
 
     const dataPtr = { $: 0n };
     const handle = new BigInt64Array([dataPtr.$]);
-    result = vkGetAccelerationStructureHandleNV(device, accelerationStructure, BigInt64Array.BYTES_PER_ELEMENT, handle.buffer);
+    result = vkGetAccelerationStructureHandleNV(device, accelerationStructure, BigInt(BigInt64Array.BYTES_PER_ELEMENT), handle.buffer);
     ASSERT_VK_RESULT(result);
 
     let geometryInstance;
@@ -1099,8 +1099,7 @@ class Vulkan {
 
       const memReqBLAS = new VkMemoryRequirements2KHR();
       vkGetAccelerationStructureMemoryRequirementsNV(device, memoryRequirementsInfo, memReqBLAS);
-
-      maximumBlasSize = Math.max(maximumBlasSize, memReqBLAS.memoryRequirements.size);
+      maximumBlasSize = Math.max(maximumBlasSize, Number(memReqBLAS.memoryRequirements.size));
     }
 
     const memReqTLAS = new VkMemoryRequirements2KHR();
@@ -1111,7 +1110,7 @@ class Vulkan {
 
     vkGetAccelerationStructureMemoryRequirementsNV(device, memoryRequirementsInfo, memReqTLAS);
 
-    const scratchBufferSize = Math.max(maximumBlasSize, memReqTLAS.memoryRequirements.size);
+    const scratchBufferSize = Math.max(maximumBlasSize, Number(memReqTLAS.memoryRequirements.size));
 
     const buffer = new VkBuffer();
     const bufferMemory = new VkDeviceMemory();
@@ -1143,7 +1142,7 @@ class Vulkan {
       Uint8Array
     );
 
-    result = vkGetRayTracingShaderGroupHandlesNV(device, pipeline.pipeline, 0, stages.length, sbtSize, mem.buffer);
+    result = vkGetRayTracingShaderGroupHandlesNV(device, pipeline.pipeline, 0, stages.length, BigInt(sbtSize), mem.buffer);
     ASSERT_VK_RESULT(result);
 
     return buffer;

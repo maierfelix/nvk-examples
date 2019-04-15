@@ -6,7 +6,7 @@
     "pngjs": "^3.3.3",
     "gl-matrix": "^2.8.1",
     "tolw": "^0.1.2",
-    "nvk": "latest",
+    "nvk": "file:../node-vulkan",
     "nvk-essentials": "latest"
   }
 }

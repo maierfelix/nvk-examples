@@ -83,7 +83,7 @@ function createVertexBuffer(buffer, bufferMemory, byteLength) {
 
   vkBindBufferMemory(device, buffer, bufferMemory, 0n);
 
-  let dataPtr = { $: 0n };
+  let dataPtr = { $: 0n }; // BigInt, be careful!
 
   result = vkMapMemory(device, bufferMemory, 0n, bufferInfo.size, 0, dataPtr);
   ASSERT_VK_RESULT(result);
@@ -167,6 +167,7 @@ vkEnumeratePhysicalDevices(instance, deviceCount, null);
 if (deviceCount.$ <= 0) console.error("Error: No render devices available!");
 
 let devices = [...Array(deviceCount.$)].map(() => new VkPhysicalDevice());
+
 result = vkEnumeratePhysicalDevices(instance, deviceCount, devices);
 ASSERT_VK_RESULT(result);
 
@@ -240,17 +241,14 @@ let surfaceSupport = { $: false };
 vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, 0, surface, surfaceSupport);
 if (!surfaceSupport) console.error(`No surface creation support!`);
 
-let imageExtent = new VkExtent2D();
-imageExtent.width = win.width;
-imageExtent.height = win.height;
-
 let swapchainInfo = new VkSwapchainCreateInfoKHR();
 swapchainInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 swapchainInfo.surface = surface;
 swapchainInfo.minImageCount = 3;
 swapchainInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 swapchainInfo.imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-swapchainInfo.imageExtent = imageExtent;
+swapchainInfo.imageExtent.width = win.width;
+swapchainInfo.imageExtent.height = win.height
 swapchainInfo.imageArrayLayers = 1;
 swapchainInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 swapchainInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -273,24 +271,16 @@ ASSERT_VK_RESULT(result);
 
 let imageViews = [...Array(amountOfImagesInSwapchain.$)].map(() => new VkImageView());
 for (let ii = 0; ii < amountOfImagesInSwapchain.$; ++ii) {
-  let components = new VkComponentMapping();
-  components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-  components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-  components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-  components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-  let subresourceRange = new VkImageSubresourceRange();
-  subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-  subresourceRange.baseMipLevel = 0;
-  subresourceRange.levelCount = 1;
-  subresourceRange.baseArrayLayer = 0;
-  subresourceRange.layerCount = 1;
   let imageViewInfo = new VkImageViewCreateInfo();
   imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
   imageViewInfo.image = swapchainImages[ii];
   imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
   imageViewInfo.format = VK_FORMAT_B8G8R8A8_UNORM;
-  imageViewInfo.components = components;
-  imageViewInfo.subresourceRange = subresourceRange;
+  imageViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  imageViewInfo.subresourceRange.baseMipLevel = 0;
+  imageViewInfo.subresourceRange.levelCount = 1;
+  imageViewInfo.subresourceRange.baseArrayLayer = 0;
+  imageViewInfo.subresourceRange.layerCount = 1;
 
   result = vkCreateImageView(device, imageViewInfo, null, imageViews[ii])
   ASSERT_VK_RESULT(result);
@@ -335,15 +325,11 @@ viewport.height = win.height;
 viewport.minDepth = 0.0;
 viewport.maxDepth = 1.0;
 
-let scissorOffset = new VkOffset2D();
-scissorOffset.x = 0;
-scissorOffset.y = 0;
-let scissorExtent = new VkExtent2D();
-scissorExtent.width = win.width;
-scissorExtent.height = win.height;
 let scissor = new VkRect2D();
-scissor.offset = scissorOffset;
-scissor.extent = scissorExtent;
+scissor.offset.x = 0;
+scissor.offset.y = 0;
+scissor.extent.width = win.width;
+scissor.extent.height = win.height;
 
 let viewportStateInfo = new VkPipelineViewportStateCreateInfo();
 viewportStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -521,23 +507,16 @@ for (let ii = 0; ii < cmdBuffers.length; ++ii) {
   result = vkBeginCommandBuffer(cmdBuffer, cmdBufferBeginInfo);
   ASSERT_VK_RESULT(result);
 
-  let offset = new VkOffset2D();
-  offset.x = 0;
-  offset.y = 0;
-  let extent = new VkExtent2D();
-  extent.width = win.width;
-  extent.height = win.height;
-  let renderArea = new VkRect2D();
-  renderArea.offset = offset;
-  renderArea.extent = extent;
-
   let clearValue = new VkClearValue();
 
   let renderPassBeginInfo = new VkRenderPassBeginInfo();
   renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
   renderPassBeginInfo.renderPass = renderPass;
   renderPassBeginInfo.framebuffer = framebuffers[ii];
-  renderPassBeginInfo.renderArea = renderArea;
+  renderPassBeginInfo.renderArea.offset.x = 0;
+  renderPassBeginInfo.renderArea.offset.y = 0;
+  renderPassBeginInfo.renderArea.extent.width = win.width;
+  renderPassBeginInfo.renderArea.extent.height = win.height;
   renderPassBeginInfo.clearValueCount = 1;
   renderPassBeginInfo.pClearValues = [clearValue];
   vkCmdBeginRenderPass(cmdBuffer, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);

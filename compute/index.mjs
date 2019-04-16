@@ -14,7 +14,7 @@ function createShaderModule(shaderSrc) {
   let shaderModuleInfo = new VkShaderModuleCreateInfo();
   shaderModuleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   shaderModuleInfo.pCode = shaderSrc;
-  shaderModuleInfo.codeSize = BigInt(shaderSrc.byteLength);
+  shaderModuleInfo.codeSize = shaderSrc.byteLength;
   result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
   ASSERT_VK_RESULT(result);
   return shaderModule;
@@ -67,7 +67,7 @@ let workGroupSize = 32;
 
 let pixelBuffer = new VkBuffer();
 let pixelBufferMemory = new VkDeviceMemory();
-let pixelBufferSize = BigInt(width * height * (4 * Float32Array.BYTES_PER_ELEMENT));
+let pixelBufferSize = width * height * (4 * Float32Array.BYTES_PER_ELEMENT);
 
 let compShaderSrc = GLSL.toSPIRVSync({
   source: fs.readFileSync(`./shaders/mandelbrot.comp`),
@@ -222,12 +222,6 @@ let layers = [];
 {
   compShaderModule = createShaderModule(compShaderSrc);
 
-  let shaderStageCompInfo = new VkPipelineShaderStageCreateInfo();
-  shaderStageCompInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-  shaderStageCompInfo.module = compShaderModule;
-  shaderStageCompInfo.pName = "main";
-  shaderStageCompInfo.pSpecializationInfo = null;
-
   let pipelineLayoutInfo = new VkPipelineLayoutCreateInfo();
   pipelineLayoutInfo.setLayoutCount = 1;
   pipelineLayoutInfo.pSetLayouts = [descriptorSetLayout];
@@ -236,7 +230,10 @@ let layers = [];
   ASSERT_VK_RESULT(result);
 
   let computePipelineInfo = new VkComputePipelineCreateInfo();
-  computePipelineInfo.stage = shaderStageCompInfo;
+  computePipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+  computePipelineInfo.stage.module = compShaderModule;
+  computePipelineInfo.stage.pName = "main";
+  computePipelineInfo.stage.pSpecializationInfo = null;
   computePipelineInfo.layout = pipelineLayout;
 
   result = vkCreateComputePipelines(device, null, 1, [computePipelineInfo], null, [pipeline]);
@@ -291,7 +288,7 @@ let layers = [];
   result = vkQueueSubmit(queue, 1, [submitInfo], fence);
   ASSERT_VK_RESULT(result);
 
-  result = vkWaitForFences(device, 1, [fence], VK_TRUE, BigInt(60 * 1e9));
+  result = vkWaitForFences(device, 1, [fence], VK_TRUE, 60 * 1e9);
   ASSERT_VK_RESULT(result);
 
 }

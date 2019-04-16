@@ -40,7 +40,8 @@ Texture2D.prototype.upload = function() {
     imageMemory,
     imageLayout
   } = this;
-  let byteLength = BigInt(data.byteLength);
+
+  let byteLength = data.byteLength;
 
   let stagingBuffer = new VkBuffer();
   let stagingBufferMemory = new VkDeviceMemory();

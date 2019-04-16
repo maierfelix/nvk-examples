@@ -89,7 +89,7 @@ export function uploadBufferData(opts = {}) {
     bufferMemory
   } = opts;
 
-  let size = BigInt(data.byteLength);
+  let size = data.byteLength;
 
   let stagingBuffer = new VkBuffer();
   let stagingBufferMemory = new VkDeviceMemory();

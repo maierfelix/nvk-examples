@@ -248,7 +248,7 @@ function readBinaryFile(path) {
 function createShaderModule(shaderSrc, shaderModule) {
   let shaderModuleInfo = new VkShaderModuleCreateInfo();
   shaderModuleInfo.pCode = shaderSrc;
-  shaderModuleInfo.codeSize = BigInt(shaderSrc.byteLength);
+  shaderModuleInfo.codeSize = shaderSrc.byteLength;
   result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
   ASSERT_VK_RESULT(result);
   return shaderModule;
@@ -981,7 +981,7 @@ function createDescriptorSet() {
   let bufferInfo = new VkDescriptorBufferInfo();
   bufferInfo.buffer = uniformBuffer;
   bufferInfo.offset = 0n;
-  bufferInfo.range = BigInt(ubo.byteLength);
+  bufferInfo.range = ubo.byteLength;
 
   let writeDescriptorSet = new VkWriteDescriptorSet();
   writeDescriptorSet.dstSet = descriptorSet;
@@ -1104,13 +1104,13 @@ function updateTransforms() {
   for (let ii = 0; ii < mModel.length; ++ii) ubo[0 + ii] = mModel[ii];
 
   // upload
-  if (uboMemoryAddr.$ === 0n) vkMapMemory(device, uniformBufferMemory, 0n, BigInt(ubo.byteLength), 0, uboMemoryAddr);
-  memoryCopy(uboMemoryAddr.$, ubo, BigInt(ubo.byteLength));
+  if (uboMemoryAddr.$ === 0n) vkMapMemory(device, uniformBufferMemory, 0n, ubo.byteLength, 0, uboMemoryAddr);
+  memoryCopy(uboMemoryAddr.$, ubo, ubo.byteLength);
 };
 
 function drawFrame() {
   let imageIndex = { $: 0 };
-  result = vkAcquireNextImageKHR(device, swapchain, BigInt(Number.MAX_SAFE_INTEGER), semaphoreImageAvailable, null, imageIndex);
+  result = vkAcquireNextImageKHR(device, swapchain, Number.MAX_SAFE_INTEGER, semaphoreImageAvailable, null, imageIndex);
   ASSERT_VK_RESULT(result);
 
   let waitStageMask = new Int32Array([

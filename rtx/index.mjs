@@ -480,13 +480,13 @@ class Vulkan {
       vkCmdTraceRaysNV(
         cmdBuffer,
         SBT,
-        BigInt(sbt.getRaygenOffset()),
+        sbt.getRaygenOffset(),
         SBT,
-        BigInt(sbt.getMissOffset()),
-        BigInt(sbt.getStride()),
+        sbt.getMissOffset(),
+        sbt.getStride(),
         SBT,
-        BigInt(sbt.getHitOffset()),
-        BigInt(sbt.getStride()),
+        sbt.getHitOffset(),
+        sbt.getStride(),
         null,
         0n,
         0n,
@@ -734,7 +734,7 @@ class Vulkan {
     function createShaderModule(shaderSrc, shaderModule) {
       const shaderModuleInfo = new VkShaderModuleCreateInfo({
         pCode: shaderSrc,
-        codeSize: BigInt(shaderSrc.byteLength)
+        codeSize: shaderSrc.byteLength
       });
       result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
       ASSERT_VK_RESULT(result);
@@ -762,11 +762,11 @@ class Vulkan {
 
   drawFrame(device, swapchain, queue, { semaphoreImageAvailable, semaphoreRenderingAvailable }, cmdBuffers, fenses) {
     const imageIndex = { $: 0 };
-    result = vkAcquireNextImageKHR(device, swapchain, BigInt(Number.MAX_SAFE_INTEGER), semaphoreImageAvailable, null, imageIndex);
+    result = vkAcquireNextImageKHR(device, swapchain, Number.MAX_SAFE_INTEGER, semaphoreImageAvailable, null, imageIndex);
     ASSERT_VK_RESULT(result);
 
     const fence = fenses[imageIndex.$];
-    result = vkWaitForFences(device, 1, [fence], VK_TRUE, BigInt(Number.MAX_SAFE_INTEGER));
+    result = vkWaitForFences(device, 1, [fence], VK_TRUE, Number.MAX_SAFE_INTEGER);
     ASSERT_VK_RESULT(result);
     vkResetFences(device, 1, [fence]);
 
@@ -994,7 +994,7 @@ class Vulkan {
       vertexData: vertexBuffer,
       vertexOffset: 0n,
       vertexCount: vertexBuffer.length / 3,
-      vertexStride: BigInt(3 * Float32Array.BYTES_PER_ELEMENT),
+      vertexStride: 3 * Float32Array.BYTES_PER_ELEMENT,
       vertexFormat: VK_FORMAT_R32G32B32_SFLOAT,
       indexData: indicesBuffer,
       indexOffset: 0n,
@@ -1070,7 +1070,7 @@ class Vulkan {
 
     const dataPtr = { $: 0n };
     const handle = new BigInt64Array([dataPtr.$]);
-    result = vkGetAccelerationStructureHandleNV(device, accelerationStructure, BigInt(BigInt64Array.BYTES_PER_ELEMENT), handle.buffer);
+    result = vkGetAccelerationStructureHandleNV(device, accelerationStructure, BigInt64Array.BYTES_PER_ELEMENT, handle.buffer);
     ASSERT_VK_RESULT(result);
 
     let geometryInstance;
@@ -1142,7 +1142,7 @@ class Vulkan {
       Uint8Array
     );
 
-    result = vkGetRayTracingShaderGroupHandlesNV(device, pipeline.pipeline, 0, stages.length, BigInt(sbtSize), mem.buffer);
+    result = vkGetRayTracingShaderGroupHandlesNV(device, pipeline.pipeline, 0, stages.length, sbtSize, mem.buffer);
     ASSERT_VK_RESULT(result);
 
     return buffer;

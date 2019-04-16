@@ -39,7 +39,7 @@ export function getMemoryTypeIndex(physicalDevice, typeFilter, propertyFlag) {
 
 export function createVertexBuffer(physicalDevice, device, buffer, bufferMemory, vertices, usage, typedArray) {
   const bufferInfo = new VkBufferCreateInfo({
-    size: BigInt(vertices.byteLength),
+    size: vertices.byteLength,
     usage: usage,
     sharingMode: VK_SHARING_MODE_EXCLUSIVE,
     queueFamilyIndexCount: 0,

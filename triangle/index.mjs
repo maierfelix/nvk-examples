@@ -35,7 +35,7 @@ function createShaderModule(shaderSrc, shaderModule) {
   let shaderModuleInfo = new VkShaderModuleCreateInfo();
   shaderModuleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
   shaderModuleInfo.pCode = shaderSrc;
-  shaderModuleInfo.codeSize = BigInt(shaderSrc.byteLength);
+  shaderModuleInfo.codeSize = shaderSrc.byteLength;
   result = vkCreateShaderModule(device, shaderModuleInfo, null, shaderModule);
   ASSERT_VK_RESULT(result);
   return shaderModule;
@@ -58,7 +58,7 @@ function getMemoryTypeIndex(typeFilter, propertyFlag) {
 function createVertexBuffer(buffer, bufferMemory, byteLength) {
   let bufferInfo = new VkBufferCreateInfo();
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-  bufferInfo.size = BigInt(byteLength);
+  bufferInfo.size = byteLength;
   bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   bufferInfo.queueFamilyIndexCount = 0;
@@ -83,7 +83,7 @@ function createVertexBuffer(buffer, bufferMemory, byteLength) {
 
   vkBindBufferMemory(device, buffer, bufferMemory, 0n);
 
-  let dataPtr = { $: 0n }; // BigInt, be careful!
+  let dataPtr = { $: 0n };
 
   result = vkMapMemory(device, bufferMemory, 0n, bufferInfo.size, 0, dataPtr);
   ASSERT_VK_RESULT(result);
@@ -544,7 +544,7 @@ ASSERT_VK_RESULT(result);
 function drawFrame() {
 
   let imageIndex = { $: 0 };
-  vkAcquireNextImageKHR(device, swapchain, BigInt(Number.MAX_SAFE_INTEGER), semaphoreImageAvailable, null, imageIndex);
+  vkAcquireNextImageKHR(device, swapchain, Number.MAX_SAFE_INTEGER, semaphoreImageAvailable, null, imageIndex);
 
   let waitStageMask = new Int32Array([
     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT

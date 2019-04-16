@@ -8,7 +8,7 @@ export function memoryCopy(dstPtr, srcData, byteLen) {
 
 export function createBuffer({ size, usage, buffer, bufferMemory, propertyFlags } = opts) {
   let bufferInfo = new VkBufferCreateInfo();
-  bufferInfo.size = BigInt(size);
+  bufferInfo.size = size;
   bufferInfo.usage = usage;
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   bufferInfo.queueFamilyIndexCount = 0;
@@ -69,7 +69,7 @@ export function copyBuffer({ srcBuffer, dstBuffer, byteLength } = opts) {
 };
 
 export function uploadBufferData({ data, usage, buffer, bufferMemory } = opts) {
-  let size = BigInt(data.byteLength);
+  let size = data.byteLength;
 
   let stagingBuffer = new VkBuffer();
   let stagingBufferMemory = new VkDeviceMemory();

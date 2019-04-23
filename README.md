@@ -9,9 +9,9 @@ To compile shaders at runtime, [nvk-essentials](https://github.com/maierfelix/nv
 ## Building:
 1. Clone this repository
 2. Run `npm install`
-3. Navigate into an example folder and run `npm run start --vkversion=1.1.101`
+3. Navigate into an example folder and run `npm run start --vkversion=1.1.106`
 
-Note that the `--vkversion` flag specifies the vulkan version you want to use. Currently the recommended version is `1.1.101`.
+Note that the `--vkversion` flag specifies the vulkan version you want to use. Currently the recommended version is `1.1.106`.
 
 ## Previews:
 

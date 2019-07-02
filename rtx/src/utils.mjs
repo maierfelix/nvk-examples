@@ -7,7 +7,7 @@ export function ASSERT_VK_RESULT(result) {
 }
 
 export function memoryCopy(dstPtr, srcData, byteLen) {
-  const dstBuffer = createV8ArrayBufferFromMemory(dstPtr, byteLen);
+  const dstBuffer = ArrayBuffer.fromAddress(dstPtr, byteLen);
   const srcBuffer = srcData.buffer;
   const dstView = new Uint8Array(dstBuffer);
   const srcView = new Uint8Array(srcBuffer);
@@ -17,7 +17,7 @@ export function memoryCopy(dstPtr, srcData, byteLen) {
 }
 
 export function memoryCopy2(dstPtr, srcData, dstbyteLen, srcbyteLen, offset) {
-  const dstBuffer = createV8ArrayBufferFromMemory(dstPtr, dstbyteLen);
+  const dstBuffer = ArrayBuffer.fromAddress(dstPtr, dstbyteLen);
   const srcBuffer = srcData.buffer;
   const dstView = new Uint8Array(dstBuffer);
   const srcView = new Uint8Array(srcBuffer);

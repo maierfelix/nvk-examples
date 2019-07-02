@@ -3,6 +3,5 @@
   "version": "0.0.1",
   "scripts": {
     "start": "tsc index.ts & node index.js"
-  },
-  "dependencies": {}
+  }
 }

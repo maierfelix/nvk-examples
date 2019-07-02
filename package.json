@@ -7,6 +7,7 @@
     "gl-matrix": "^2.8.1",
     "tolw": "^0.1.2",
     "nvk": "file:../node-vulkan",
-    "nvk-essentials": "latest"
+    "nvk-essentials": "latest",
+    "@types/node": "^12.0.10"
   }
 }

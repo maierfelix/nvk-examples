@@ -66,7 +66,7 @@ void main() {
   for (int ii = 0; ii < 4; ++ii) {
 
     vec3 lightColor = lightColors[ii];
-    vec3 lightPosition = lightPositions[ii];
+    vec3 lightPosition = lightPositions[ii] + (ii + 1) * vLightPosition;
 
     vec3 N = normalize(vSurfaceNormal);
     vec3 V = normalize(vCameraPosition - vPosition);

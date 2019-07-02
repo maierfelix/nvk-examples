@@ -42,12 +42,6 @@ win.ondrop = (e) => {
   console.log(e);
 };
 
-win.onfocus = (e) => {
-  //if (e.focused) console.log("Focused!");
-  //else console.log("Not focused!");
-};
-// win.focus();
-
 global.ASSERT_VK_RESULT = result => {
   if (result !== VK_SUCCESS) throw new Error(`Vulkan assertion failed!`);
 };
@@ -56,14 +50,6 @@ win.onresize = (e) => {
   recreateSwapchain();
   createTransforms();
 };
-
-win.onclose = (e) => {
-  //console.log("Closed!", e);
-};
-
-/*setTimeout(() => {
-  win.close();
-}, 3e3);*/
 
 let mousePressed = false;
 win.onmousedown = (e) => {
@@ -81,10 +67,6 @@ win.onmousemove = (e) => {
   }
 };
 
-win.onmousewheel = (e) => {
-  //console.log("onmousewheel", e);
-};
-
 win.onkeydown = (e) => {
   let {keyCode} = e;
   // up, down
@@ -94,10 +76,6 @@ win.onkeydown = (e) => {
   if (keyCode === 263) roughness = Math.max(0.01, Math.min(roughness - 0.05, 1.0));
   if (keyCode === 262) roughness = Math.max(0.01, Math.min(roughness + 0.05, 1.0));
   console.log(`Metallness:`, metallness, `Roughness:`, roughness);
-};
-
-win.onkeyup = (e) => {
-  //console.log("onkeyup", e);
 };
 
 let vertSrc = GLSL.toSPIRVSync({
@@ -135,7 +113,7 @@ let mModel = mat4.create();
 let mView = mat4.create();
 let mProjection = mat4.create();
 
-let vLightPosition = vec3.fromValues(1.0, 3.0, 2.0);
+let vLightPosition = vec3.create();
 let vCameraPosition = vec3.fromValues(2.0, 2.0, 2.0);
 
 let ubo = new Float32Array(
@@ -303,7 +281,7 @@ function createTransforms() {
     vec3.fromValues(0.0, 0.0, 0.0),
     vec3.fromValues(0.0, 0.0, 1.0)
   );
-  for (let ii = 0; ii < mView.length; ++ii) ubo[16 + ii] = mView[ii];
+  ubo.set(mView, 16);
   // projection
   mat4.perspective(
     mProjection,
@@ -313,7 +291,9 @@ function createTransforms() {
     4096.0
   );
   mProjection[5] *= -1.0;
-  for (let ii = 0; ii < mProjection.length; ++ii) ubo[32 + ii] = mProjection[ii];
+  ubo.set(mProjection, 32);
+  // light bounce effect
+  ubo.set(vLightPosition, 48);
 };
 
 function createInstance() {
@@ -1082,12 +1062,16 @@ let uboMemoryAddr = { $: 0n };
 function updateTransforms() {
   let now = performance.now();
 
-  // light
-  for (let ii = 0; ii < vLightPosition.length; ++ii) ubo[48 + ii] = vLightPosition[ii];
-  // camera
-  for (let ii = 0; ii < vCameraPosition.length; ++ii) ubo[52 + ii] = vCameraPosition[ii];
+  // bouncing lights
+  vLightPosition[0] = Math.cos(now / 1e3 * 1.25) * 0.100;
+  vLightPosition[1] = Math.sin(now / 1e3 * 1.50) * 0.125;
+  vLightPosition[2] = Math.cos(now / 1e3 * 1.75) * 0.150;
 
-  //let gg = (Math.sin(performance.now() * 0.001) + 1.0) / 2.0;
+  // light
+  ubo.set(vLightPosition, 48);
+  // camera
+  ubo.set(vCameraPosition, 52);
+
   ubo[56] = metallness;
   ubo[57] = roughness;
 
@@ -1101,7 +1085,7 @@ function updateTransforms() {
   );
   rotationX += (!mousePressed ? 0.25 : 0.0) + rotationVeloX * 0.1;
   rotationVeloX *= 0.9;
-  for (let ii = 0; ii < mModel.length; ++ii) ubo[0 + ii] = mModel[ii];
+  ubo.set(mModel, 0);
 
   // upload
   if (uboMemoryAddr.$ === 0n) vkMapMemory(device, uniformBufferMemory, 0n, ubo.byteLength, 0, uboMemoryAddr);
@@ -1139,7 +1123,7 @@ function drawFrame() {
 
   result = vkQueuePresentKHR(queue, presentInfo);
   if (result === VK_SUBOPTIMAL_KHR || result === VK_ERROR_OUT_OF_DATE_KHR) {
-    win.onresize();
+    if (!win.shouldClose()) win.onresize();
   } else {
     ASSERT_VK_RESULT(result);
   }

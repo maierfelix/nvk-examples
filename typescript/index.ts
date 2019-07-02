@@ -1,4 +1,4 @@
-import * as nvk from "nvk/generated/1.1.101/win32/index";
+import * as nvk from "nvk/generated/1.1.106/win32/index";
 
 Object.assign(global, nvk);
 
@@ -40,5 +40,3 @@ let amountOfLayers = { $: 0 };
 vkEnumerateInstanceLayerProperties(amountOfLayers, null);
 let layers = new Array(amountOfLayers.$).fill(null).map(() => new VkLayerProperties());
 vkEnumerateInstanceLayerProperties(amountOfLayers, layers);
-
-console.log(layers);

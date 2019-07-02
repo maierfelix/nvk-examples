@@ -837,8 +837,12 @@ function drawFrame() {
 
   result = vkQueuePresentKHR(queue, presentInfo);
   if (result === VK_SUBOPTIMAL_KHR || result === VK_ERROR_OUT_OF_DATE_KHR) {
-    win.onresize();
+    if (!win.shouldClose()) win.onresize();
   } else {
     ASSERT_VK_RESULT(result);
   }
 };
+
+setTimeout(() => {
+  win.close();
+}, 2e3);

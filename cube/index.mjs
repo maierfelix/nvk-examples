@@ -842,7 +842,3 @@ function drawFrame() {
     ASSERT_VK_RESULT(result);
   }
 };
-
-setTimeout(() => {
-  win.close();
-}, 2e3);

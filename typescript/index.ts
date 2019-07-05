@@ -1,4 +1,4 @@
-import * as nvk from "nvk/generated/1.1.106/win32/index";
+import * as nvk from "nvk";
 
 Object.assign(global, nvk);
 

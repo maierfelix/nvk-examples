@@ -7,7 +7,7 @@ import {
   copyBuffer,
   uploadBufferData,
   getMemoryTypeIndex
-} from "./buffer";
+} from "./buffer.mjs";
 
 class Texture2D {
   constructor(opts = {}) {

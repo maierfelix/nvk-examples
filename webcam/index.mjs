@@ -12,7 +12,7 @@ import {
   copyBuffer,
   uploadBufferData,
   getMemoryTypeIndex
-} from "./buffer";
+} from "./buffer.mjs";
 
 Object.assign(global, nvk);
 

@@ -3,13 +3,13 @@ import nvk from 'nvk';
 import { performance } from 'perf_hooks';
 import glm from 'gl-matrix';
 const { vec3, vec4, mat4 } = glm;
-import { Plane, Cube } from './geometry';
-import { VkGeometryInstance, Camera, SBT, UniformStorage } from './src/objects';
+import { Plane, Cube } from './geometry.mjs';
+import { VkGeometryInstance, Camera, SBT, UniformStorage } from './src/objects.mjs';
 import {
   createVertexBuffer,
   getMemoryTypeIndex,
   ASSERT_VK_RESULT
-} from './src/utils';
+} from './src/utils.mjs';
 
 let result = null;
 let FRAME = 0;

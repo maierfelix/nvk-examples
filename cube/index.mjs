@@ -4,8 +4,8 @@ import { GLSL } from "nvk-essentials";
 import { performance } from "perf_hooks";
 import glm from "gl-matrix"; const { vec3, mat4 } = glm;
 
-import Cube from "./cube";
-import Texture2D from "./texture-2d";
+import Cube from "./cube.mjs";
+import Texture2D from "./texture-2d.mjs";
 
 import {
   memoryCopy,
@@ -13,7 +13,7 @@ import {
   copyBuffer,
   uploadBufferData,
   getMemoryTypeIndex
-} from "./buffer";
+} from "./buffer.mjs";
 
 Object.assign(global, nvk);
 

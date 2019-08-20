@@ -1,8 +1,8 @@
 import fs from "fs";
 import nvk from "nvk";
-import { GLSL } from "nvk-essentials";
 import { performance } from "perf_hooks";
 import glm from "gl-matrix"; const { vec3, mat4 } = glm;
+import essentials from "nvk-essentials"; const {GLSL} = essentials;
 
 import tolw from "tolw";
 

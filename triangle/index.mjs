@@ -1,6 +1,6 @@
 import fs from "fs";
 import nvk from "nvk";
-import { GLSL } from "nvk-essentials";
+import essentials from "nvk-essentials"; const {GLSL} = essentials;
 
 Object.assign(global, nvk);
 

@@ -1,7 +1,7 @@
 import {
   getMemoryTypeIndex,
   ASSERT_VK_RESULT
-} from './utils';
+} from './utils.mjs';
 
 let result = null;
 

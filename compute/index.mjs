@@ -1,7 +1,7 @@
 import fs from "fs";
 import nvk from "nvk";
-import { GLSL } from "nvk-essentials";
 import pngjs from "pngjs"; const { PNG } = pngjs;
+import essentials from "nvk-essentials"; const {GLSL} = essentials;
 
 Object.assign(global, nvk);
 

@@ -127,7 +127,7 @@ class Vulkan {
       applicationVersion: VK_MAKE_VERSION(1, 0, 0),
       pEngineName: 'No Engine',
       engineVersion: VK_MAKE_VERSION(1, 0, 0),
-      apiVersion: VK_API_VERSION_1_0
+      apiVersion: VK_API_VERSION_1_1
     });
 
     const validationLayers = ['VK_LAYER_LUNARG_core_validation', 'VK_LAYER_LUNARG_standard_validation'];

@@ -94,7 +94,6 @@ function createVertexBuffer(buffer, bufferMemory, byteLength) {
     verticesView[ii] = vertices[ii];
   };
   vkUnmapMemory(device, bufferMemory);
-
 };
 
 let vertSrc = GLSL.toSPIRVSync({
@@ -136,10 +135,10 @@ let win = new VulkanWindow({
 let appInfo = new VkApplicationInfo();
 appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 appInfo.pApplicationName = "Hello!";
-appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 1);
 appInfo.pEngineName = "No Engine";
-appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-appInfo.apiVersion = VK_API_VERSION_1_0;
+appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 1);
+appInfo.apiVersion = VK_API_VERSION_1_1;
 
 // create info
 let createInfo = new VkInstanceCreateInfo();

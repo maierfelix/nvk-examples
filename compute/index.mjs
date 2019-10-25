@@ -76,7 +76,10 @@ let compShaderSrc = GLSL.toSPIRVSync({
 
 let compShaderModule = null;
 
-let layers = [];
+let layers = [
+  "VK_LAYER_LUNARG_core_validation",
+  "VK_LAYER_LUNARG_standard_validation"
+];
 
 /** Create instance **/
 {
@@ -86,7 +89,7 @@ let layers = [];
   appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
   appInfo.pEngineName = "No Engine";
   appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-  appInfo.apiVersion = VK_API_VERSION_1_0;
+  appInfo.apiVersion = VK_API_VERSION_1_1;
 
   let createInfo = new VkInstanceCreateInfo();
   createInfo.pApplicationInfo = appInfo;
@@ -126,8 +129,8 @@ let layers = [];
   let deviceInfo = new VkDeviceCreateInfo();
   deviceInfo.queueCreateInfoCount = 1;
   deviceInfo.pQueueCreateInfos = [deviceQueueInfo];
-  deviceInfo.enabledExtensionCount = layers.length;
-  deviceInfo.ppEnabledExtensionNames = layers;
+  deviceInfo.enabledExtensionCount = 0;
+  deviceInfo.ppEnabledExtensionNames = [];
   deviceInfo.pEnabledFeatures = new VkPhysicalDeviceFeatures();
 
   result = vkCreateDevice(physicalDevice, deviceInfo, null, device);

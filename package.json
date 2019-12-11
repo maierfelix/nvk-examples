@@ -7,6 +7,7 @@
     "gl-matrix": "^2.8.1",
     "nvk": "latest",
     "nvk-essentials": "latest",
+    "nvk-struct-cache": "latest",
     "pngjs": "^3.3.3",
     "tolw": "^0.1.2"
   }

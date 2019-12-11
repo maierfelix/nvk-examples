@@ -76,10 +76,7 @@ let compShaderSrc = GLSL.toSPIRVSync({
 
 let compShaderModule = null;
 
-let layers = [
-  "VK_LAYER_LUNARG_core_validation",
-  "VK_LAYER_LUNARG_standard_validation"
-];
+let layers = [];
 
 /** Create instance **/
 {
